@@ -1,38 +1,42 @@
+/* eslint-disable testing-library/no-render-in-setup */
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import App from '../../App'
 
-const setup = () => render(<App />)
-const getPopup = () => screen.getByTestId('popup')
-const getApplyButton = () => screen.getByRole('button', { name: /Apply/i })
-const getCloseButton = () => screen.getByRole('button', { name: /Close/i })
-
-afterEach(() => cleanup)
-
-test('Popup renders correctly', () => {
-  setup()
-  expect(getPopup()).toBeInTheDocument()
+describe('Test Popup presence', () => {
+  test('Should render App then Popup must be exists.', () => {
+    render(<App />)
+    expect(screen.getByTestId('popup')).toBeInTheDocument()
+  })
 })
 
-test('Popup is have "Apply" button', () => {
-  setup()
-  expect(getApplyButton()).toBeInTheDocument()
+describe('Test Popups buttons presence', () => {
+  beforeEach(() => render(<App />))
+  afterEach(cleanup)
+
+  test('Should Apply button exists', () => {
+    expect(screen.getByRole('button', { name: /Apply/i })).toBeInTheDocument()
+  })
+
+  test('Should Close button exists', () => {
+    expect(screen.getByRole('button', { name: /Close/i })).toBeInTheDocument()
+  })
 })
 
-test('Popup is have "Close" button', () => {
-  setup()
-  expect(getCloseButton()).toBeInTheDocument()
-})
+describe('Test Popups buttons functionality', () => {
+  beforeEach(() => render(<App />))
+  afterEach(cleanup)
 
-test("Popup's body changes after clicking 'Apply' button", () => {
-  setup()
-  userEvent.click(getApplyButton())
-  expect(getPopup()).toHaveTextContent(/You have successfully applied./i)
-})
+  test('Should click Apply button then Popup body will change.', () => {
+    userEvent.click(screen.getByRole('button', { name: /Apply/i }))
+    expect(screen.getByTestId('popup')).toHaveTextContent(
+      /You have successfully applied./i
+    )
+  })
 
-test('Popup is closing after clicking "Close" button', () => {
-  setup()
-  userEvent.click(getCloseButton())
-  expect(getPopup()).toHaveClass('hidden')
+  test('Should click Close button then Popup will close.', () => {
+    userEvent.click(screen.getByRole('button', { name: /Close/i }))
+    expect(screen.getByTestId('popup')).toHaveClass('hidden')
+  })
 })
