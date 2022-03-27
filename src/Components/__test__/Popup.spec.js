@@ -1,4 +1,5 @@
 /* eslint-disable testing-library/no-render-in-setup */
+import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
